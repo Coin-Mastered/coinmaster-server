@@ -14,7 +14,7 @@ public class CoinMasterApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/*").allowedHeaders("*").allowedOriginPatterns("*").allowedMethods("*")/*.allowCredentials(true)*/;
+				registry.addMapping("/*").allowedHeaders("*").allowedOriginPatterns("*").allowedMethods("*");
 			}
 		};
 	}
