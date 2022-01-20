@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.coinmaster.model.AuthRequest;
 import com.coinmaster.model.User;
 import com.coinmaster.service.UserService;
 
@@ -26,8 +27,8 @@ public class UserController {
 		return ResponseEntity.ok(userService.getById(id));
 	}
 
-	@PostMapping("/add")
-	public ResponseEntity<User> addUser(@Valid @RequestBody User u) {
+	@PostMapping("/save")
+	public ResponseEntity<User> saveUser(@Valid @RequestBody User u) {
 		return ResponseEntity.ok(userService.add(u));
 	}
 
@@ -35,9 +36,9 @@ public class UserController {
 	public void removeUser(@PathVariable("id") int id) {
 		userService.remove(id);
 	}
-
-	@PostMapping("/update")
-	public ResponseEntity<User> update(@Valid @RequestBody User u) {
-		return ResponseEntity.ok(userService.add(u));
+	
+	@PostMapping("/login")
+	public ResponseEntity<User> addUser(@Valid @RequestBody AuthRequest ar) {
+		return ResponseEntity.ok(userService.login(ar));
 	}
 }

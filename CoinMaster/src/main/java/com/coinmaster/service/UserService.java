@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.coinmaster.data.UserRepository;
 import com.coinmaster.data.WalletRepository;
+import com.coinmaster.model.AuthRequest;
 import com.coinmaster.model.User;
 import com.coinmaster.model.Wallet;
 
@@ -41,17 +42,13 @@ public class UserService {
 		walletRepository.deleteAllByUserId(id);
 		userRepository.deleteById(id);
 	}
-
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public User update(User u) {
-		System.out.println("Service pre: " + u);
-		User user = userRepository.save(u);
-		for(Wallet w : user.getWallets()) {
-			w.setUser(user);
-			walletRepository.save(w);
+	
+	@Transactional(readOnly=true)
+	public User login(AuthRequest ar) {
+		User user = userRepository.findByUsername(ar.getUsername());
+		if(user != null && ar.getPassword().equals(user.getPassword())) {
+			return user;
 		}
-		System.out.println("Service post: " + user);
-		return user;
+		return null;
 	}
-
 }

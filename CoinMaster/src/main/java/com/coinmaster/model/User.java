@@ -2,6 +2,7 @@ package com.coinmaster.model;
 
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,8 +11,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
-
-import org.hibernate.validator.constraints.Length;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,9 +39,9 @@ public class User {
 	@Email
 	private @NonNull String email;
 
+	@Column(unique=true)
 	private @NonNull String username;
 	
-	@Length(min=8)
 	private @NonNull String password;
 
 	@OneToMany(mappedBy="user")
