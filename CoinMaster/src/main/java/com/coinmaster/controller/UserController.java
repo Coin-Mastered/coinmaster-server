@@ -20,22 +20,22 @@ import com.coinmaster.service.UserService;
 public class UserController {
 	@Autowired
 	UserService userService;
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<User> getById(@PathVariable("id") int id) {
 		return ResponseEntity.ok(userService.getById(id));
 	}
-	
+
 	@PostMapping("/add")
 	public ResponseEntity<User> addUser(@Valid @RequestBody User u) {
 		return ResponseEntity.ok(userService.add(u));
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public void removeUser(@PathVariable("id") int id) {
 		userService.remove(id);
 	}
-	
+
 	@PostMapping("/update")
 	public ResponseEntity<User> update(@Valid @RequestBody User u) {
 		return ResponseEntity.ok(userService.add(u));

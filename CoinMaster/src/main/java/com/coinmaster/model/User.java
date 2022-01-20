@@ -1,60 +1,59 @@
 package com.coinmaster.model;
 
-import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Table(name="users")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class User {
-	
+
 	@Id
+	@Column(name = "user_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@JsonView({ JsonViewProfiles.User.class, JsonViewProfiles.Wallet.class })
 	private int id;
-	
+
 	@Pattern(regexp = "[a-zA-Z][a-zA-Z]*")
-	private String firstName;
-	
+	private @NonNull String firstName;
+
 	@Pattern(regexp = "[a-zA-Z][a-zA-Z]*")
-	private String lastName;
-	
-	private String username;
-	
+	private @NonNull String lastName;
+
 	@Email
-	private String email;
+	private @NonNull String email;
 
+	private @NonNull String username;
+	
 	@Length(min=8)
-	private String password;
+	private @NonNull String password;
 
-	public User(@Pattern(regexp = "[a-zA-Z][a-zA-Z]*") String firstName,
-			@Pattern(regexp = "[a-zA-Z][a-zA-Z]*") String lastName, String username, @Email String email,
-			@Length(min = 8) String password) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.username = username;
-		this.email = email;
-		this.password = password;
-	}
-
-	// private List<Wallet> wallets;
+	@OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonView(JsonViewProfiles.User.class)
+	private @NonNull Set<Wallet> wallets;
+	
 }
