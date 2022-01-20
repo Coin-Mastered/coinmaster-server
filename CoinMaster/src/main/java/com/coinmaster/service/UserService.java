@@ -27,10 +27,13 @@ public class UserService {
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public User add(User u) {
 		System.out.println("Service pre: " + u);
-		for(Wallet w : u.getWallets()) {
+		User user = userRepository.save(u);
+		for(Wallet w : user.getWallets()) {
+			w.setUser(user);
 			walletRepository.save(w);
 		}
-		return userRepository.save(u);
+		System.out.println("Service post: " + user);
+		return user;
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -43,6 +46,7 @@ public class UserService {
 		System.out.println("Service pre: " + u);
 		User user = userRepository.save(u);
 		for(Wallet w : user.getWallets()) {
+			w.setUser(user);
 			walletRepository.save(w);
 		}
 		System.out.println("Service post: " + user);
