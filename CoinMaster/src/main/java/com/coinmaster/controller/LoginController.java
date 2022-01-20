@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.coinmaster.data.UserRepository;
 import com.coinmaster.model.AuthRequest;
 import com.coinmaster.util.JwtUtil;
 
@@ -19,14 +18,11 @@ public class LoginController {
 	private JwtUtil jwtUtil;
 	
 	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
 	private AuthenticationManager authenticationManager;
 
 	@GetMapping("/")
 	public String login() {
-		return "You've successfully logged in!";
+		return "login success";
 	}
 
 	@PostMapping("/authenticate")

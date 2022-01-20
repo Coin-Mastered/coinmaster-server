@@ -50,6 +50,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf()
         .disable()
         .authorizeRequests()
+        .antMatchers("/")
+        .permitAll();
+        
+        // Spring security
+        /*
         .antMatchers("/authenticate")
         .permitAll().antMatchers(HttpMethod.OPTIONS, "/**")
                 .permitAll().anyRequest().authenticated()
@@ -57,5 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        */
     }
 }
