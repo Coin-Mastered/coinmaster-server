@@ -38,6 +38,7 @@ public class UserService {
 
 	@Transactional(propagation=Propagation.REQUIRED)
 	public void remove(int id) {
+		walletRepository.deleteAllByUserId(id);
 		userRepository.deleteById(id);
 	}
 

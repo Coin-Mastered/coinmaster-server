@@ -7,5 +7,5 @@ import com.coinmaster.model.Wallet;
 
 @Repository
 public interface WalletRepository extends JpaRepository<Wallet, Integer> {
-
+	public void deleteAllByUserId(Integer id);
 }

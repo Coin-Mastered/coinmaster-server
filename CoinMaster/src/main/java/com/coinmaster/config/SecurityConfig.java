@@ -52,8 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .antMatchers("/")
         .permitAll();
+        http.headers()
+        .frameOptions()
+        .disable();
         
-        // Spring security
+        /** Login Authentication Disabled **/
         /*
         .antMatchers("/authenticate")
         .permitAll().antMatchers(HttpMethod.OPTIONS, "/**")
