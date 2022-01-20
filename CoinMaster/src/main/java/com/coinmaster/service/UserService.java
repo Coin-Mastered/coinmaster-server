@@ -51,4 +51,9 @@ public class UserService {
 		}
 		return null;
 	}
+	
+	@Transactional(readOnly=true)
+	public Boolean checkUsernameExists(String username) {
+		return userRepository.existsByUsername(username);
+	}
 }

@@ -41,4 +41,10 @@ public class UserController {
 	public ResponseEntity<User> addUser(@Valid @RequestBody AuthRequest ar) {
 		return ResponseEntity.ok(userService.login(ar));
 	}
+	
+	@PostMapping("/check")
+	public ResponseEntity<Boolean> checkUsernameExists(@Valid @RequestBody String username) {
+		System.out.println(username);
+		return ResponseEntity.ok(userService.checkUsernameExists(username));
+	}
 }
