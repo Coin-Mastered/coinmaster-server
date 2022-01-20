@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
-@WebFilter("/*") // Our frontend Angular Application will be running on port 4200 and making request to our localhost at port 5000
+@WebFilter("/*")
 public class CorsFilter extends OncePerRequestFilter {
 
 	@Override
