@@ -33,6 +33,7 @@ public class UserController {
 
 	@PostMapping("/save")
 	public ResponseEntity<User> saveUser(@Valid @RequestBody User u) {
+		System.out.println(u);
 		return ResponseEntity.ok(userService.add(u));
 	}
 
