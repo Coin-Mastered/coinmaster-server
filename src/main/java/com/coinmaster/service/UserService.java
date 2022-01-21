@@ -50,8 +50,10 @@ public class UserService {
 	public User login(AuthRequest ar) {
 		User user = userRepository.findByUsername(ar.getUsername());
 		if(user != null && ar.getPassword().equals(user.getPassword())) {
+			System.out.println(user);
 			return user;
 		}
+		System.out.println("Does not exists!");
 		return null;
 	}
 	
@@ -62,9 +64,7 @@ public class UserService {
 
 	@Transactional(readOnly=true)
 	public List<User> getLeaderboard() {
-		ExchangeRates exchangeRates = ExchangeRates.getCurrentExchangeRates();
-		
-		
-		return null;
+		ExchangeRates.updateExchangeRates();
+		return userRepository.findAll().stream().sorted(ExchangeRates::compareUserValue).limit(5).toList();
 	}
 }

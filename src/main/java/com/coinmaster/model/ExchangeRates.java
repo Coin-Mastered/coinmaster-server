@@ -24,7 +24,23 @@ public class ExchangeRates {
     @JsonProperty("rates")
     private Map<String, Double> rates;
     
-    public static ExchangeRates getCurrentExchangeRates() {
+    private static ExchangeRates currentExchangeRates;
+
+    public static int compareUserValue(User l, User r) {
+    	Double lValue = l.getWallets().stream().mapToDouble(w -> w.getAmount() + 1 / currentExchangeRates.rates.get(w.getAssetName()).doubleValue()).sum();
+    	System.out.println(l.getUsername() + ": " + lValue);
+    	Double rValue = r.getWallets().stream().mapToDouble(w -> w.getAmount() + 1 / currentExchangeRates.rates.get(w.getAssetName()).doubleValue()).sum();
+    	System.out.println(r.getUsername() + ": " + rValue);
+    	if(lValue < rValue) {
+    		return 1;
+    	}
+    	else if(rValue > lValue) {
+    		return -1;
+    	}
+	    return 0;
+	}
+    
+    public static void updateExchangeRates() {
     	StringBuffer content = new StringBuffer();
         try {
             URL url = new URL("https://api.coinbase.com/v2/exchange-rates");
@@ -47,9 +63,8 @@ public class ExchangeRates {
             
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(content.toString());
-            ExchangeRates exchangeRates = mapper.readValue(rootNode.get("data").toString(), ExchangeRates.class);
-            System.out.println(exchangeRates);
-            return exchangeRates;
+            currentExchangeRates = mapper.readValue(rootNode.get("data").toString(), ExchangeRates.class);
+            System.out.println(currentExchangeRates);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (JsonMappingException e) {
@@ -59,6 +74,5 @@ public class ExchangeRates {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
     }
 }
