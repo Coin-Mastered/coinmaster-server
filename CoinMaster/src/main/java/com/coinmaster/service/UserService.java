@@ -1,5 +1,7 @@
 package com.coinmaster.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.coinmaster.data.UserRepository;
 import com.coinmaster.data.WalletRepository;
 import com.coinmaster.model.AuthRequest;
+import com.coinmaster.model.ExchangeRates;
 import com.coinmaster.model.User;
 import com.coinmaster.model.Wallet;
 
@@ -55,5 +58,13 @@ public class UserService {
 	@Transactional(readOnly=true)
 	public Boolean checkUsernameExists(String username) {
 		return userRepository.existsByUsername(username);
+	}
+
+	@Transactional(readOnly=true)
+	public List<User> getLeaderboard() {
+		ExchangeRates exchangeRates = ExchangeRates.getCurrentExchangeRates();
+		
+		
+		return null;
 	}
 }

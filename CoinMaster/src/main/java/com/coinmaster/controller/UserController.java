@@ -1,5 +1,7 @@
 package com.coinmaster.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +48,10 @@ public class UserController {
 	public ResponseEntity<Boolean> checkUsernameExists(@Valid @RequestBody String username) {
 		System.out.println(username);
 		return ResponseEntity.ok(userService.checkUsernameExists(username));
+	}
+	
+	@GetMapping("/leaderboard")
+	public List<User> getLeaderboard() {
+		return userService.getLeaderboard();
 	}
 }
