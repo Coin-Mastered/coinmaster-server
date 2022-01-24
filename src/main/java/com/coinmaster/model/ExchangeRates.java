@@ -33,14 +33,22 @@ public class ExchangeRates {
     }
 
     public static int compareUserValue(User l, User r) {
-    	Double lValue = l.getWallets().stream().mapToDouble(w -> w.getAmount() + 1 / currentExchangeRates.rates.get(w.getAssetName()).doubleValue()).sum();
-    	System.out.println(l.getUsername() + ": " + lValue);
-    	Double rValue = r.getWallets().stream().mapToDouble(w -> w.getAmount() + 1 / currentExchangeRates.rates.get(w.getAssetName()).doubleValue()).sum();
+    	Double lValue = l.getWallets().stream().mapToDouble(w -> {
+    		double value = w.getAmount() / currentExchangeRates.rates.get(w.getAssetName()).doubleValue();
+    		System.out.println("User: " + w.getUser().getUsername() + " Asset: " + w.getAssetName() + " Value: $" + value);
+    		return value;
+    	}).sum();
+    	Double rValue = r.getWallets().stream().mapToDouble(w -> {
+    		double value = w.getAmount() / currentExchangeRates.rates.get(w.getAssetName()).doubleValue();
+    		System.out.println("User: " + w.getUser().getUsername() + " Asset: " + w.getAssetName() + " Value: $" + value);
+    		return value;
+    	}).sum();
+    	System.out.println(r.getUsername() + ": " + rValue);
     	System.out.println(r.getUsername() + ": " + rValue);
     	if(lValue < rValue) {
     		return 1;
     	}
-    	else if(rValue > lValue) {
+    	else if(rValue < lValue) {
     		return -1;
     	}
 	    return 0;
