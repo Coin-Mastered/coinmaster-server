@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -75,7 +76,7 @@ public class UserService {
 	@Transactional(readOnly=true)
 	public List<User> getLeaderboard() {
 		ExchangeRates.updateExchangeRates();
-		return userRepository.findAll().stream().sorted(ExchangeRates::compareUserValue).limit(5).toList();
+		return userRepository.findAll().stream().sorted(ExchangeRates::compareUserValue).limit(5).collect(Collectors.toList());
 	}
 
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
