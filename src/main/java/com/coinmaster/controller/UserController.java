@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.coinmaster.model.AuthRequest;
+import com.coinmaster.model.Transaction;
 import com.coinmaster.model.User;
 import com.coinmaster.service.UserService;
 
@@ -34,7 +35,7 @@ public class UserController {
 	@PostMapping("/save")
 	public ResponseEntity<User> saveUser(@Valid @RequestBody User u) {
 		System.out.println(u);
-		return ResponseEntity.ok(userService.add(u));
+		return ResponseEntity.ok(userService.save(u));
 	}
 
 	@DeleteMapping("/{id}")
@@ -57,5 +58,17 @@ public class UserController {
 	@GetMapping("/leaderboard")
 	public List<User> getLeaderboard() {
 		return userService.getLeaderboard();
+	}
+	
+	@PostMapping("/buy")
+	public ResponseEntity<User> makeBuy(@Valid @RequestBody Transaction transaction) {
+		System.out.println(transaction);
+		return ResponseEntity.ok(userService.buy(transaction));
+	}
+	
+	@PostMapping("/sell")
+	public ResponseEntity<User> makeSell(@Valid @RequestBody Transaction transaction) {
+		System.out.println(transaction);
+		return ResponseEntity.ok(userService.sell(transaction));
 	}
 }

@@ -24,7 +24,13 @@ public class ExchangeRates {
     @JsonProperty("rates")
     private Map<String, Double> rates;
     
+    private ExchangeRates() {}
+    
     private static ExchangeRates currentExchangeRates;
+    
+    public static ExchangeRates getCurrentExchangeRates() {
+    	return currentExchangeRates;
+    }
 
     public static int compareUserValue(User l, User r) {
     	Double lValue = l.getWallets().stream().mapToDouble(w -> w.getAmount() + 1 / currentExchangeRates.rates.get(w.getAssetName()).doubleValue()).sum();

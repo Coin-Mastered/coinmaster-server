@@ -1,6 +1,12 @@
 package com.coinmaster.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +17,7 @@ import com.coinmaster.data.UserRepository;
 import com.coinmaster.data.WalletRepository;
 import com.coinmaster.model.AuthRequest;
 import com.coinmaster.model.ExchangeRates;
+import com.coinmaster.model.Transaction;
 import com.coinmaster.model.User;
 import com.coinmaster.model.Wallet;
 
@@ -29,15 +36,18 @@ public class UserService {
 	}
 
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public User add(User u) {
+	public User save(User u) {
 		System.out.println("Service pre: " + u);
-		User user = userRepository.save(u);
-		for(Wallet w : user.getWallets()) {
-			w.setUser(user);
-			walletRepository.save(w);
+		User updatedUser = userRepository.save(u);
+		System.out.println(updatedUser.getWallets());
+		Set<Wallet> wallets = new HashSet<Wallet>();
+		for(Wallet w : u.getWallets()) {
+			w.setUser(updatedUser);
+			wallets.add(walletRepository.save(w));
 		}
-		System.out.println("Service post: " + user);
-		return user;
+		updatedUser.setWallets(wallets);
+		System.out.println("Service post: " + updatedUser);
+		return updatedUser;
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED)
@@ -66,5 +76,41 @@ public class UserService {
 	public List<User> getLeaderboard() {
 		ExchangeRates.updateExchangeRates();
 		return userRepository.findAll().stream().sorted(ExchangeRates::compareUserValue).limit(5).toList();
+	}
+
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	public User buy(@Valid Transaction transaction) {
+		ExchangeRates.updateExchangeRates();
+		Map<String, Double> rates = ExchangeRates.getCurrentExchangeRates().getRates();
+		Wallet usd = walletRepository.findByUserIdAndAssetName(transaction.getUserId(), "USD");
+		Wallet crypto = walletRepository.findByUserIdAndAssetName(transaction.getUserId(), transaction.getAssetName());
+		if(transaction.getAmount() <= 0) { throw new IllegalArgumentException("Must be greater than zero"); }
+		double transactionPrice = transaction.getAmount() / rates.get(crypto.getAssetName());
+		if( transactionPrice > usd.getAmount()) { throw new RuntimeException("Insufficient funds"); }
+		usd.setAmount(usd.getAmount() - transactionPrice);
+		crypto.setAmount(crypto.getAmount() + transaction.getAmount());
+		walletRepository.save(usd);
+		walletRepository.save(crypto);
+		Optional<User> u = userRepository.findById(transaction.getUserId());
+		if(u.isEmpty()) { throw new RuntimeException("User cannot be found"); }
+		return u.get();
+	}
+
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	public User sell(@Valid Transaction transaction) {
+		ExchangeRates.updateExchangeRates();
+		Map<String, Double> rates = ExchangeRates.getCurrentExchangeRates().getRates();
+		Wallet usd = walletRepository.findByUserIdAndAssetName(transaction.getUserId(), "USD");
+		Wallet crypto = walletRepository.findByUserIdAndAssetName(transaction.getUserId(), transaction.getAssetName());
+		if(transaction.getAmount() <= 0) { throw new IllegalArgumentException("Must be greater than zero"); }
+		if(transaction.getAmount() > crypto.getAmount()) { throw new IllegalArgumentException("Insufficient funds!"); }
+		double transactionPrice = transaction.getAmount() / rates.get(crypto.getAssetName());
+		usd.setAmount(usd.getAmount() + transactionPrice);
+		crypto.setAmount(crypto.getAmount() - transaction.getAmount());
+		walletRepository.save(usd);
+		walletRepository.save(crypto);
+		Optional<User> u = userRepository.findById(transaction.getUserId());
+		if(u.isEmpty()) { throw new RuntimeException("User cannot be found"); }
+		return u.get();
 	}
 }
