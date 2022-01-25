@@ -32,7 +32,6 @@ public class ExchangeRates {
     public static double getUserValue(User u) {
     	return u.getWallets().stream().mapToDouble(w -> {
     		double value = w.getAmount() / currentExchangeRates.rates.get(w.getAssetName()).doubleValue();
-    		System.out.println("User: " + w.getUser().getUsername() + " Asset: " + w.getAssetName() + " Value: $" + value);
     		return value;
     	}).sum();
     }
@@ -40,8 +39,6 @@ public class ExchangeRates {
     public static int compareUserValue(User l, User r) {
     	Double lValue = getUserValue(l);
     	Double rValue = getUserValue(r);
-    	System.out.println(r.getUsername() + ": " + rValue);
-    	System.out.println(l.getUsername() + ": " + rValue);
     	if(lValue < rValue) {
     		return 1;
     	}
@@ -61,8 +58,6 @@ public class ExchangeRates {
             con.setConnectTimeout(2000);
             con.setReadTimeout(2000);
             
-            int status = con.getResponseCode();
-            System.out.println(status);
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -75,7 +70,6 @@ public class ExchangeRates {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(content.toString());
             currentExchangeRates = mapper.readValue(rootNode.get("data").toString(), ExchangeRates.class);
-            System.out.println(currentExchangeRates);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }

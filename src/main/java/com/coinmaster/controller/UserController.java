@@ -36,8 +36,6 @@ public class UserController {
 
 	@PostMapping("/save")
 	public ResponseEntity<User> saveUser(@Valid @RequestBody UserDTO udto) {
-		System.out.println(udto);
-		System.out.println(udto.toUser());
 		return ResponseEntity.ok(userService.save(udto.toUser()));
 	}
 
@@ -48,13 +46,11 @@ public class UserController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<User> addUser(@Valid @RequestBody AuthRequest ar) {
-		System.out.println(ar);
 		return ResponseEntity.ok(userService.login(ar));
 	}
 	
 	@PostMapping("/check")
 	public ResponseEntity<Boolean> checkUsernameExists(@Valid @RequestBody String username) {
-		System.out.println(username);
 		return ResponseEntity.ok(userService.checkUsernameExists(username));
 	}
 	
@@ -65,13 +61,11 @@ public class UserController {
 	
 	@PostMapping("/buy")
 	public ResponseEntity<User> makeBuy(@Valid @RequestBody Transaction transaction) {
-		System.out.println(transaction);
 		return ResponseEntity.ok(userService.buy(transaction));
 	}
 	
 	@PostMapping("/sell")
 	public ResponseEntity<User> makeSell(@Valid @RequestBody Transaction transaction) {
-		System.out.println(transaction);
 		return ResponseEntity.ok(userService.sell(transaction));
 	}
 }

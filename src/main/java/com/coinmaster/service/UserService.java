@@ -39,16 +39,13 @@ public class UserService {
 
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public User save(User u) {
-		System.out.println("Service pre: " + u);
 		User updatedUser = userRepository.save(u);
-		System.out.println(updatedUser.getWallets());
-		Set<Wallet> wallets = new HashSet<Wallet>();
+		Set<Wallet> wallets = new HashSet<>();
 		for(Wallet w : u.getWallets()) {
 			w.setUser(updatedUser);
 			wallets.add(walletRepository.save(w));
 		}
 		updatedUser.setWallets(wallets);
-		System.out.println("Service post: " + updatedUser);
 		return updatedUser;
 	}
 
@@ -62,10 +59,8 @@ public class UserService {
 	public User login(AuthRequest ar) {
 		User user = userRepository.findByUsername(ar.getUsername());
 		if(user != null && ar.getPassword().equals(user.getPassword())) {
-			System.out.println(user);
 			return user;
 		}
-		System.out.println("Does not exists!");
 		return null;
 	}
 	
