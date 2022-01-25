@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.coinmaster.dto.UserDTO;
 import com.coinmaster.model.AuthRequest;
 import com.coinmaster.model.LeaderboardEntry;
 import com.coinmaster.model.Transaction;
@@ -34,9 +35,10 @@ public class UserController {
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<User> saveUser(@Valid @RequestBody User u) {
-		System.out.println(u);
-		return ResponseEntity.ok(userService.save(u));
+	public ResponseEntity<User> saveUser(@Valid @RequestBody UserDTO udto) {
+		System.out.println(udto);
+		System.out.println(udto.toUser());
+		return ResponseEntity.ok(userService.save(udto.toUser()));
 	}
 
 	@DeleteMapping("/{id}")
