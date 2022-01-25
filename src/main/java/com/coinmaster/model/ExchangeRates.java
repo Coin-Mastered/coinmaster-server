@@ -31,20 +31,20 @@ public class ExchangeRates {
     public static ExchangeRates getCurrentExchangeRates() {
     	return currentExchangeRates;
     }
+    
+    public static double getUserValue(User u) {
+    	return u.getWallets().stream().mapToDouble(w -> {
+    		double value = w.getAmount() / currentExchangeRates.rates.get(w.getAssetName()).doubleValue();
+    		System.out.println("User: " + w.getUser().getUsername() + " Asset: " + w.getAssetName() + " Value: $" + value);
+    		return value;
+    	}).sum();
+    }
 
     public static int compareUserValue(User l, User r) {
-    	Double lValue = l.getWallets().stream().mapToDouble(w -> {
-    		double value = w.getAmount() / currentExchangeRates.rates.get(w.getAssetName()).doubleValue();
-    		System.out.println("User: " + w.getUser().getUsername() + " Asset: " + w.getAssetName() + " Value: $" + value);
-    		return value;
-    	}).sum();
-    	Double rValue = r.getWallets().stream().mapToDouble(w -> {
-    		double value = w.getAmount() / currentExchangeRates.rates.get(w.getAssetName()).doubleValue();
-    		System.out.println("User: " + w.getUser().getUsername() + " Asset: " + w.getAssetName() + " Value: $" + value);
-    		return value;
-    	}).sum();
+    	Double lValue = getUserValue(l);
+    	Double rValue = getUserValue(r);
     	System.out.println(r.getUsername() + ": " + rValue);
-    	System.out.println(r.getUsername() + ": " + rValue);
+    	System.out.println(l.getUsername() + ": " + rValue);
     	if(lValue < rValue) {
     		return 1;
     	}

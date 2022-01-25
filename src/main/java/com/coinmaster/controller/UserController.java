@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.coinmaster.model.AuthRequest;
+import com.coinmaster.model.LeaderboardEntry;
 import com.coinmaster.model.Transaction;
 import com.coinmaster.model.User;
 import com.coinmaster.service.UserService;
@@ -56,7 +57,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/leaderboard")
-	public List<User> getLeaderboard() {
+	public List<LeaderboardEntry> getLeaderboard() {
 		return userService.getLeaderboard();
 	}
 	

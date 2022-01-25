@@ -18,6 +18,7 @@ import com.coinmaster.data.UserRepository;
 import com.coinmaster.data.WalletRepository;
 import com.coinmaster.model.AuthRequest;
 import com.coinmaster.model.ExchangeRates;
+import com.coinmaster.model.LeaderboardEntry;
 import com.coinmaster.model.Transaction;
 import com.coinmaster.model.User;
 import com.coinmaster.model.Wallet;
@@ -73,10 +74,11 @@ public class UserService {
 		return userRepository.existsByUsername(username);
 	}
 
-	@Transactional(readOnly=true)
-	public List<User> getLeaderboard() {
+	@Transactional(readOnly = true)
+	public List<LeaderboardEntry> getLeaderboard() {
 		ExchangeRates.updateExchangeRates();
-		return userRepository.findAll().stream().sorted(ExchangeRates::compareUserValue).limit(5).collect(Collectors.toList());
+		return userRepository.findAll().stream().sorted(ExchangeRates::compareUserValue).limit(5)
+				.map(u -> new LeaderboardEntry(u, ExchangeRates.getUserValue(u))).collect(Collectors.toList());
 	}
 
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
@@ -93,7 +95,7 @@ public class UserService {
 		walletRepository.save(usd);
 		walletRepository.save(crypto);
 		Optional<User> u = userRepository.findById(transaction.getUserId());
-		if(u.isEmpty()) { throw new RuntimeException("User cannot be found"); }
+		if(!u.isPresent()) { throw new RuntimeException("User cannot be found"); }
 		return u.get();
 	}
 
@@ -111,7 +113,7 @@ public class UserService {
 		walletRepository.save(usd);
 		walletRepository.save(crypto);
 		Optional<User> u = userRepository.findById(transaction.getUserId());
-		if(u.isEmpty()) { throw new RuntimeException("User cannot be found"); }
+		if(!u.isPresent()) { throw new RuntimeException("User cannot be found"); }
 		return u.get();
 	}
 }
